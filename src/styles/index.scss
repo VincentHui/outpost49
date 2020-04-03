@@ -8,4 +8,15 @@ body {
     padding: 0;
     border: 0;
   }
-  
+  #menuTitle {
+	position: absolute;
+	bottom: 50%;
+	width: 100%;
+	text-align: center;
+	z-index: 100;
+    display:block;
+    color: white;
+    background-color: rgba($color: black, $alpha: 0.5);
+    font-family: monospace;
+    font-size: xx-large;
+}
