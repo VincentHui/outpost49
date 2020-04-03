@@ -22,17 +22,17 @@ function ColorLuminance(hex, lum) {
 
 export const createAsteroids = (realScene) => {
     var maxWidth = 1000;
-    var maxHeight = 200;
-    var maxDepth = 200;
+    // var maxHeight = 200;
+    // var maxDepth = 200;
     var asteroids = [];
-    for(var i=0;i<7;i++){
-      asteroids.push(createRock(5+Math.random()*50,200,maxWidth,300,400, realScene));
+    for(var i=0;i<5;i++){
+      asteroids.push(createRock(5+Math.random()*50,600,maxWidth,300,200, realScene));
     }
-    for(var i=0;i<30;i++){
-      asteroids.push(createRock(5+Math.random()*10,500,maxWidth,200,600, realScene));
+    for(var i=0;i<20;i++){
+      asteroids.push(createRock(5+Math.random()*8,500,maxWidth- 200,200,600, realScene));
     }
-    for(var i=0;i<160;i++){
-      asteroids.push(createRock(2+Math.random()*5,1000,maxWidth,150,800, realScene));
+    for(var i=0;i<50;i++){
+      asteroids.push(createRock(2+Math.random()*2,1000,maxWidth- 500,150,800, realScene));
     }
     return asteroids;
   }

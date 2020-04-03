@@ -31,7 +31,11 @@ function init(){
   scene.fog = new THREE.FogExp2( 0xefd1b5, 0.0005 );
 	const camera = new THREE.PerspectiveCamera(50, ww/wh, 5, 10000);
 	camera.position.set(0, 0, 1000);
-	scene.add(camera);
+    scene.add(camera);
+    
+    document.getElementById('menuPlay').onclick = function (params) {
+        console.log('play!')
+    }
 	// light = new THREE.DirectionalLight(0xffffff, 1);
 	// light.position.set( 50, 250, 500 );
   
@@ -61,10 +65,10 @@ light2.shadow.camera.far = 1500;
     
     const geometry = new THREE.Geometry();
     var x, y, z;
-    for(var i=0;i<2000;i++){
-      x = (Math.random() * ww *2) - ww;
-      y = (Math.random() * wh * 2) - wh;
-      z = (Math.random() * 3000) - 1500;
+    for(var i=0;i<3000;i++){
+      x = (Math.random() * ww-800 *2) - ww-800;
+      y = (Math.random() * wh-800 * 2) - wh-800;
+      z = (Math.random() * 1500) - 750;
       
       geometry.vertices.push(new THREE.Vector3(x, y, z));
     };
@@ -82,7 +86,7 @@ light2.shadow.camera.far = 1500;
   function update () {
   //  console.log(1);
     pointCloud.rotation.x -= 0.0001;
-    //pointCloud.rotation.y -= 0.001;
+    pointCloud.rotation.y -= 0.001;
     pointCloud.rotation.z -= 0.0001;
     asteroids.forEach(function(obj){
           obj.rotation.x -= obj.r.x;
