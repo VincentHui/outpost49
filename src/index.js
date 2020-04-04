@@ -3,8 +3,13 @@ require('normalize.css/normalize.css');
 require('./styles/index.scss');
 // const THREE = require('three');
 import * as THREE from 'three';
-import {createAsteroids} from './app'
+import {createAsteroids, createPlanet} from './app'
+import TWEEN from '@tweenjs/tween.js';
+// const TWEEN = require('@tweenjs/tween.js');
+// function animate(time) {
+//     requestAnimationFrame(animate);
 
+// }
 // document.addEventListener("DOMContentLoaded", () => {
 
 //     const pluginsTriggerElement = document.getElementById('plugins-trigger');
@@ -24,19 +29,44 @@ var ww = window.innerWidth,
 function init(){
 	const renderer = new THREE.WebGLRenderer({canvas : document.getElementById('scene'),antialias: true});
 	renderer.setClearColor(0x000000);
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 	renderer.setSize(ww,wh);
 	const scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2( 0xefd1b5, 0.0005 );
+    scene.fog = new THREE.FogExp2( 0xefd1b5, 0.0005 );
 	const camera = new THREE.PerspectiveCamera(50, ww/wh, 5, 10000);
-	camera.position.set(0, 0, 1000);
+	camera.position.set(0, 600, 1000);
     scene.add(camera);
+
+    var coords = { y: 600 }; 
+    const intro = new TWEEN.Tween(coords) 
+    .to({ y: 0 }, 3000)
+    .easing(TWEEN.Easing.Cubic.InOut) 
+    .onUpdate(() => { 
+        camera.position.set(0, coords.y, 1000);
+    })
+    .start(); 
     
     document.getElementById('menuPlay').onclick = function (params) {
-        console.log('play!')
+        intro.stop();
+        var coords = { y: 0 }; // Start at (0, 0)
+        const tween = new TWEEN.Tween(coords) // Create a new tween that modifies 'coords'.
+        .to({ y: -900 }, 1000) // Move to (300, 200) in 1 second.
+        .easing(TWEEN.Easing.Cubic.InOut) // Use an easing function to make the animation smooth.
+        .onUpdate(() => { // Called after tween.js updates 'coords'.
+            // Move 'box' to the position described by 'coords' with a CSS translation.
+            // box.style.setProperty('transform', `translate(${coords.x}px, ${coords.y}px)`);
+            camera.position.set(0, coords.y, 1000);
+        })
+        .onComplete(obj =>{
+            asteroids.forEach(function(obj){
+                scene.remove(obj)
+          })
+        })
+        .start(); // Start the tween immediately.
+        
     }
-	// light = new THREE.DirectionalLight(0xffffff, 1);
+	// var light = new THREE.DirectionalLight(0xffffff, 1);
 	// light.position.set( 50, 250, 500 );
   
 //  var light = new THREE.PointLight( 0xff7f24, 6, 1000 );
@@ -49,45 +79,24 @@ function init(){
 // 	scene.add(light);
   
    var light2 = new THREE.PointLight( 0x6495ed, 6, 1000 );
-light2.position.set(-250, -100, 0 );
-light2.castShadow = true;            // default false
-light2.shadow.mapSize.width = 1024;  // default 512
-light2.shadow.mapSize.height = 1024; // default 512
-light2.shadow.camera.near = 2;       // default 0.5
-light2.shadow.camera.far = 1500;  
+    light2.position.set(-500, -100, 0 );
+    light2.castShadow = true;            // default false
+    light2.shadow.mapSize.width = 512;  // default 512
+    light2.shadow.mapSize.height = 512; // default 512
+    light2.shadow.camera.near = 2;       // default 0.5
+    light2.shadow.camera.far = 1500;  
 	scene.add(light2);
-
-
-//	var obj = createBox(10);
-  var material = new THREE.PointCloudMaterial({
-      color: 0x555555
-    });
-    
-    const geometry = new THREE.Geometry();
-    var x, y, z;
-    for(var i=0;i<3000;i++){
-      x = (Math.random() * ww-800 *2) - ww-800;
-      y = (Math.random() * wh-800 * 2) - wh-800;
-      z = (Math.random() * 1500) - 750;
-      
-      geometry.vertices.push(new THREE.Vector3(x, y, z));
-    };
-    
-    var pointCloud = new THREE.PointCloud(geometry, material);
-    scene.add(pointCloud);
   
   
   
   
   var asteroids = createAsteroids(scene);
-//  var obj = extrude();
-//  var obj = extrude2();
-  
-  function update () {
+  var planet = createPlanet(70,scene);
+  function update (time) {
   //  console.log(1);
-    pointCloud.rotation.x -= 0.0001;
-    pointCloud.rotation.y -= 0.001;
-    pointCloud.rotation.z -= 0.0001;
+    // pointCloud.rotation.x -= 0.0001;
+    // pointCloud.rotation.y -= 0.001;
+    // pointCloud.rotation.z -= 0.0001;
     asteroids.forEach(function(obj){
           obj.rotation.x -= obj.r.x;
           obj.rotation.y -= obj.r.y;
@@ -95,6 +104,7 @@ light2.shadow.camera.far = 1500;
     })
 
     renderer.render(scene, camera);
+    TWEEN.update();
     requestAnimationFrame(update);
   }
   requestAnimationFrame(update);
