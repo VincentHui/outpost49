@@ -91,7 +91,7 @@ function init(){
   
   
   var asteroids = createAsteroids(scene);
-  var planet = createPlanet(70,scene);
+  var planet = createPlanet(60,scene);
   function update (time) {
   //  console.log(1);
     // pointCloud.rotation.x -= 0.0001;

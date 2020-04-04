@@ -23,37 +23,44 @@ function ColorLuminance(hex, lum) {
 export const createPlanet = (size, realScene) =>{
     const geometry = new THREE.DodecahedronGeometry(size, 1);
     geometry.vertices.forEach(function(v){
-      v.x += (0-Math.random()*(size/4));
-      v.y += (0-Math.random()*(size/4));
-      v.z += (0-Math.random()*(size/4));
+      v.x += (0.5*(size/4));
+      v.y += (0.6*(size/4));
+      v.z += (0.4*(size/4));
     })
     var color = '#111111';
     color = ColorLuminance(color,2+Math.random()*10);
     // console.log(color);
       const texture = new THREE.MeshStandardMaterial({color:color,
         flatShading: true,
-                                       //   shininess: 0.5,
-                                              roughness: 0.8,
-                                              metalness: 1
-                                          });
+        shininess: 0.2,
+            roughness: 0.8,
+            metalness: 1
+        });
   
       const	cube = new THREE.Mesh(geometry, texture);
     cube.castShadow = true;
     // cube.receiveShadow = true;
-    cube.scale.set(1+Math.random()*0.4,1+Math.random()*0.8,1+Math.random()*0.4);
+    cube.scale.set(1+0.6,1+0.8,1*0.4);
       //cube.rotation.y = Math.PI/4;
       //cube.rotation.x = Math.PI/4;
     var x = 0;
-    // var centeredness = 1-(Math.abs(x)/(maxWidth/2));
-    var y = -1000
-    var z = 200
+    var y = -1300;
+    var z = 200;
     cube.position.set(x,y,z)
-    cube.r = {};
-    cube.r.x = Math.random() * 0.005;
-    cube.r.y = Math.random() * 0.005;
-    cube.r.z = Math.random() * 0.005;
+    // cube.r = {};
+    // cube.r.x = Math.random() * 0.005;
+    // cube.r.y = Math.random() * 0.005;
+    // cube.r.z = Math.random() * 0.005;
     realScene.add(cube);
-    return cube;
+    var light2 = new THREE.PointLight( 0x6495ed, 7, 900 );
+    light2.position.set(0, -900, 150 );
+    // light2.castShadow = true;            // default false
+    // light2.shadow.mapSize.width = 512;  // default 512
+    // light2.shadow.mapSize.height = 512; // default 512
+    // light2.shadow.camera.near = 2;       // default 0.5
+    // light2.shadow.camera.far = 1500;  
+	realScene.add(light2);
+    return {cube,  light2};
 }
 
 export const createAsteroids = (realScene) => {
