@@ -46,8 +46,9 @@ function init(){
         camera.position.set(0, coords.y, 1000);
     })
     .start(); 
-    
+    // document.getElementById('menuPlay').style.setProperty('opacity', `1`);
     document.getElementById('menuPlay').onclick = function (params) {
+        document.getElementById('menuPlay').setAttribute("disabled", false);
         intro.stop();
         var coords = { y: 0 }; // Start at (0, 0)
         const tween = new TWEEN.Tween(coords) // Create a new tween that modifies 'coords'.
@@ -64,6 +65,18 @@ function init(){
           })
         })
         .start(); // Start the tween immediately.
+        var Obj = { opacity: 1 };
+        const alphaTween = new TWEEN.Tween(Obj) // Create a new tween that modifies 'coords'.
+        .to({ opacity: 0}, 1000) 
+        .easing(TWEEN.Easing.Quadratic.Out) // Use an easing function to make the animation smooth.
+        .onUpdate(() => { // Called after tween.js updates 'coords'.
+            // Move 'box' to the position described by 'coords' with a CSS translation.
+            document.getElementById('menuPlay').style.setProperty('opacity', `${Obj.opacity}`);
+
+            document.getElementById('menuTitle').style.setProperty('opacity', `${Obj.opacity}`);
+            console.log(Obj.opacity)
+        })
+        .start();
         
     }
 	// var light = new THREE.DirectionalLight(0xffffff, 1);
