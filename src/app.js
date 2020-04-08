@@ -19,6 +19,38 @@ function ColorLuminance(hex, lum) {
 
 	return rgb;
 }
+var geometry = new THREE.BoxGeometry( 10, 10, 10 );
+var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+var cursor = new THREE.Mesh( geometry, material );
+export const drawCursor = (realScene) =>{
+    realScene.add( cursor );
+    cursor.position.set(0, -1100, 300);
+}
+
+export const updateCursor = ({x,y}) =>{
+    cursor.position.set(x, y, 0);
+}
+
+export const drawLines  = (realScene) =>{
+    var points = [];
+    points.push( new THREE.Vector3( 0, -1100, 300 ) );
+    points.push( new THREE.Vector3( 0, -1200, 300 ) );
+    // points.push( new THREE.Vector3( 10, 0, 0 ) );
+
+    var geometry = new THREE.BufferGeometry().setFromPoints( points );
+    var material = new THREE.LineBasicMaterial( { color: 0x0000ff } );
+    var line = new THREE.Line( geometry, material );
+    // line.position.set(0, -1200, 300);
+    // var geometry = new THREE.BoxGeometry( 20, 20, 20 );
+    // var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+    // var cube = new THREE.Mesh( geometry, material );
+    // cube.position.set(0, 200, 300);
+    var x = 0;
+    var y = -1300;
+    var z = 300;
+    // realScene.add( cube );
+    realScene.add( line );
+}
 
 export const createPlanet = (size, realScene) =>{
     const geometry = new THREE.DodecahedronGeometry(size, 1);
@@ -46,6 +78,7 @@ export const createPlanet = (size, realScene) =>{
     var x = 0;
     var y = -1300;
     var z = 200;
+    
     cube.position.set(x,y,z)
     // cube.r = {};
     // cube.r.x = Math.random() * 0.005;

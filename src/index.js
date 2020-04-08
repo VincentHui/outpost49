@@ -1,31 +1,24 @@
 
 require('normalize.css/normalize.css');
 require('./styles/index.scss');
-// const THREE = require('three');
 import * as THREE from 'three';
-import {createAsteroids, createPlanet} from './app'
+import {createAsteroids, createPlanet, drawLines, drawCursor, updateCursor} from './app'
 import TWEEN from '@tweenjs/tween.js';
-// const TWEEN = require('@tweenjs/tween.js');
-// function animate(time) {
-//     requestAnimationFrame(animate);
-
-// }
-// document.addEventListener("DOMContentLoaded", () => {
-
-//     const pluginsTriggerElement = document.getElementById('plugins-trigger');
-//     const pluginsElement = document.getElementById('plugins');
-
-//     const pluginsVisibleClass = "splash-overview-plugins__list--visible";
-
-//     pluginsTriggerElement.onclick = () => {
-//         pluginsElement.classList.toggle(pluginsVisibleClass);
-//     }
-// });
 
 
 var ww = window.innerWidth,
-	wh = window.innerHeight;
+    wh = window.innerHeight;
 
+var raycaster = new THREE.Raycaster();
+var mouse = new THREE.Vector2();
+var planeX = new THREE.Plane( new THREE.Vector3( 0, 0, 1 ), 0 );
+
+function onMouseMove( event ) {
+
+    mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+}
 function init(){
 	const renderer = new THREE.WebGLRenderer({canvas : document.getElementById('scene'),antialias: true});
 	renderer.setClearColor(0x000000);
@@ -55,8 +48,6 @@ function init(){
         .to({ y: -900 }, 1000) // Move to (300, 200) in 1 second.
         .easing(TWEEN.Easing.Cubic.InOut) // Use an easing function to make the animation smooth.
         .onUpdate(() => { // Called after tween.js updates 'coords'.
-            // Move 'box' to the position described by 'coords' with a CSS translation.
-            // box.style.setProperty('transform', `translate(${coords.x}px, ${coords.y}px)`);
             camera.position.set(0, coords.y, 1000);
         })
         .onComplete(obj =>{
@@ -74,7 +65,7 @@ function init(){
             document.getElementById('menuPlay').style.setProperty('opacity', `${Obj.opacity}`);
 
             document.getElementById('menuTitle').style.setProperty('opacity', `${Obj.opacity}`);
-            console.log(Obj.opacity)
+            // console.log(Obj.opacity)
         })
         .start();
         
@@ -105,17 +96,29 @@ function init(){
   
   var asteroids = createAsteroids(scene);
   var planet = createPlanet(60,scene);
+  var lines = drawLines(scene);
+  var cursor = drawCursor(scene);
+  window.addEventListener( 'mousemove', onMouseMove, false );
   function update (time) {
-  //  console.log(1);
-    // pointCloud.rotation.x -= 0.0001;
-    // pointCloud.rotation.y -= 0.001;
-    // pointCloud.rotation.z -= 0.0001;
+
     asteroids.forEach(function(obj){
           obj.rotation.x -= obj.r.x;
           obj.rotation.y -= obj.r.y;
           obj.rotation.z -= obj.r.z;
     })
+    raycaster.setFromCamera( mouse, camera );
+    // var intersects = raycaster.intersectObjects( scene.children );
+	// for ( var i = 0; i < intersects.length; i++ ) {
 
+	// 	intersects[ i ].object.material.color.set( 0xff0000 );
+    // }
+    
+    var intersects = new THREE.Vector3();
+    raycaster.ray.intersectPlane(planeX, intersects);
+    intersects.z = 300
+    updateCursor(intersects)
+    // console.log(raycaster.ray); 
+    // console.log(intersects);
     renderer.render(scene, camera);
     TWEEN.update();
     requestAnimationFrame(update);
