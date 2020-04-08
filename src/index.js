@@ -8,10 +8,12 @@ import TWEEN from '@tweenjs/tween.js';
 
 var ww = window.innerWidth,
     wh = window.innerHeight;
-
+    const camera = new THREE.PerspectiveCamera(50, ww/wh, 5, 10000);
 var raycaster = new THREE.Raycaster();
+var raycasterClick = new THREE.Raycaster();
 var mouse = new THREE.Vector2();
 var planeX = new THREE.Plane( new THREE.Vector3( 0, 0, 1 ), 0 );
+const scene = new THREE.Scene();
 
 function onMouseMove( event ) {
 
@@ -19,15 +21,39 @@ function onMouseMove( event ) {
     mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 
 }
+
+function onMouseDown (event) {
+    // var points = [];
+    // points.push( new THREE.Vector3( 0, -1100, 300 ) );
+    // points.push( new THREE.Vector3( 0, -1200, 300 ) );
+    // points.push( new THREE.Vector3( 10, 0, 0 ) );
+
+    // var geometry = new THREE.BufferGeometry().setFromPoints( points );
+    // var material = new THREE.LineBasicMaterial( { color: 0x0000ff } );
+    // var line = new THREE.Line( geometry, material );
+    // line.position.set(0, -1200, 300);
+    var geometry = new THREE.BoxGeometry( 20, 20, 20 );
+    var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+    var cube = new THREE.Mesh( geometry, material );
+    raycaster.setFromCamera( mouse, camera );
+    var intersects = new THREE.Vector3();
+    raycaster.ray.intersectPlane(planeX, intersects);
+    cube.position.set(intersects.x, intersects.y, 1);
+    // var x = 0;
+    // var y = -1300;
+    // var z = 300;
+    // realScene.add( cube );
+    scene.add( cube );
+}
 function init(){
 	const renderer = new THREE.WebGLRenderer({canvas : document.getElementById('scene'),antialias: true});
 	renderer.setClearColor(0x000000);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 	renderer.setSize(ww,wh);
-	const scene = new THREE.Scene();
+
     scene.fog = new THREE.FogExp2( 0xefd1b5, 0.0005 );
-	const camera = new THREE.PerspectiveCamera(50, ww/wh, 5, 10000);
+	// const camera = new THREE.PerspectiveCamera(50, ww/wh, 5, 10000);
 	camera.position.set(0, 600, 1000);
     scene.add(camera);
 
@@ -96,9 +122,10 @@ function init(){
   
   var asteroids = createAsteroids(scene);
   var planet = createPlanet(60,scene);
-  var lines = drawLines(scene);
+//   var lines = drawLines(scene);
   var cursor = drawCursor(scene);
   window.addEventListener( 'mousemove', onMouseMove, false );
+  window.addEventListener( 'mousedown', onMouseDown, false );
   function update (time) {
 
     asteroids.forEach(function(obj){
@@ -115,7 +142,7 @@ function init(){
     
     var intersects = new THREE.Vector3();
     raycaster.ray.intersectPlane(planeX, intersects);
-    intersects.z = 300
+    // intersects.z = 300
     updateCursor(intersects)
     // console.log(raycaster.ray); 
     // console.log(intersects);
