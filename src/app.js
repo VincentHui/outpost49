@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-
+export const planetOrigin =  new THREE.Vector3( 0, -1300, 200 )
 function ColorLuminance(hex, lum) {
 
 	// validate hex string
@@ -71,19 +71,10 @@ export const createPlanet = (size, realScene) =>{
   
       const	cube = new THREE.Mesh(geometry, texture);
     cube.castShadow = true;
-    // cube.receiveShadow = true;
+    cube.receiveShadow = true;
     cube.scale.set(1+0.6,1+0.8,1*0.4);
-      //cube.rotation.y = Math.PI/4;
-      //cube.rotation.x = Math.PI/4;
-    var x = 0;
-    var y = -1300;
-    var z = 200;
     
-    cube.position.set(x,y,z)
-    // cube.r = {};
-    // cube.r.x = Math.random() * 0.005;
-    // cube.r.y = Math.random() * 0.005;
-    // cube.r.z = Math.random() * 0.005;
+    cube.position.copy(planetOrigin)
     realScene.add(cube);
     var light2 = new THREE.PointLight( 0x6495ed, 7, 900 );
     light2.position.set(0, -900, 150 );

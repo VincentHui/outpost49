@@ -3,7 +3,7 @@ require('normalize.css/normalize.css');
 require('./styles/index.scss');
 import * as THREE from 'three';
 import {createAsteroids, createPlanet, drawLines, drawCursor, updateCursor} from './app'
-import {initCannonShells,  fireCannon, updateCannonShells} from './cannon'
+import {initCannon,  fireCannon, updateCannonShells} from './cannon'
 import TWEEN from '@tweenjs/tween.js';
 
 
@@ -85,7 +85,7 @@ function init(){
         
     }
 
-    initCannonShells();
+    initCannon();
 
     var light2 = new THREE.PointLight( 0x6495ed, 6, 1000 );
     light2.position.set(-500, -100, 0 );
@@ -111,7 +111,6 @@ function init(){
     requestAnimationFrame(update);
     currentTime = (new Date()).getTime();
     delta = (currentTime - lastTime) / 1000;
-    // console.log(delta)
     asteroids.forEach(function(obj){
           obj.rotation.x -= obj.r.x;
           obj.rotation.y -= obj.r.y;
