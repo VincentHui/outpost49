@@ -11,10 +11,13 @@ var ww = window.innerWidth,
     wh = window.innerHeight;
 const camera = new THREE.PerspectiveCamera(50, ww/wh, 5, 10000);
 var raycaster = new THREE.Raycaster();
-var raycasterClick = new THREE.Raycaster();
+// var raycasterClick = new THREE.Raycaster();
 var mouse = new THREE.Vector2();
 var planeX = new THREE.Plane( new THREE.Vector3( 0, 0, 1 ), 0 );
 const scene = new THREE.Scene();
+var lastTime = (new Date()).getTime();
+var currentTime = 0;
+var delta = 0;
 
 function onMouseMove( event ) {
 
@@ -105,7 +108,10 @@ function init(){
 
 
   function update (time) {
-
+    requestAnimationFrame(update);
+    currentTime = (new Date()).getTime();
+    delta = (currentTime - lastTime) / 1000;
+    // console.log(delta)
     asteroids.forEach(function(obj){
           obj.rotation.x -= obj.r.x;
           obj.rotation.y -= obj.r.y;
@@ -118,8 +124,9 @@ function init(){
     updateCursor(intersects)
     renderer.render(scene, camera);
     TWEEN.update();
-    updateCannonShells()
-    requestAnimationFrame(update);
+    updateCannonShells(delta);
+    lastTime = currentTime;
+
 
   }
   requestAnimationFrame(update);
