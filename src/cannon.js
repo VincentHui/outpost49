@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { planetOrigin } from './app'
 var dir = new THREE.Vector3();
-var target = new THREE.Vector3();
+var newPosition = new THREE.Vector3();
 const shellOrigin = new THREE.Vector3().copy(planetOrigin).add(new THREE.Vector3(0, 100, -200))
 export const fireCannon = (intersects, realScene, direction)=>{
     var shellObj = LoadedShells.pop()
@@ -10,10 +10,8 @@ export const fireCannon = (intersects, realScene, direction)=>{
         return;
     }
     UnloadedShells.push(shellObj)
-    target.set(intersects.x, intersects.y, 0)
-    dir.subVectors(target , shellOrigin).normalize();
-    console.log(dir);
-    // shellObj.shell.position.set(intersects.x, intersects.y, 1);
+    newPosition.set(intersects.x, intersects.y, 0)
+    dir.subVectors(newPosition , shellOrigin).normalize();
     shellObj.shell.position.copy(shellOrigin);
     shellObj.direction.copy(dir)
     realScene.add( shellObj.shell );
@@ -27,21 +25,26 @@ export const initCannon =()=>{
         var shell = new THREE.Mesh( geometry, material );
         LoadedShells.push({
             shell, 
-            direction:new THREE.Vector3( 0, 0, 1 )
+            direction:new THREE.Vector3( 0, 0, 1 ),
+            velocity: new THREE.Vector3( 0, 0, 0)
         });        
     }
-    // LoadedShells.forEach(function(obj){
-    //     console.log(obj)
-    // })
 }
-var displacement = new THREE.Vector3( 0, 0, 0 )
-var target = new THREE.Vector3( 0, 0, 0 )
-const speed = 150
+var desiredVelocity = new THREE.Vector3()
+// var newPosition = new THREE.Vector3()
+var steering = new THREE.Vector3()
+const mass = 10
+const speed = 600
 export const updateCannonShells = (delta)=>{
     UnloadedShells.forEach(function(obj){
         //calculate velocity
-        displacement.copy( obj.direction).multiplyScalar(speed * delta);
-        target.copy( obj.shell.position ).add( displacement );
-        obj.shell.position.copy(target)
+        desiredVelocity.copy( obj.direction).multiplyScalar(speed * delta);
+        
+        steering.copy(desiredVelocity).sub(obj.velocity)
+        steering.divideScalar(mass)
+        obj.velocity.add(steering)
+        // console.log(obj.velocity)
+        // newPosition.copy( obj.shell.position ).add( obj.velocity );
+        obj.shell.position.add( obj.velocity )
     })
 }
