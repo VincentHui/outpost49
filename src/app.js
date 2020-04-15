@@ -139,3 +139,14 @@ export const createAsteroids = (realScene) => {
     realScene.add(cube);
     return cube;
   };
+
+export const createLights =(realScene) =>{
+    var light2 = new THREE.PointLight(0x6495ed, 6, 1000);
+    light2.position.set(-500, -100, 0);
+    light2.castShadow = true; // default false
+    light2.shadow.mapSize.width = 512; // default 512
+    light2.shadow.mapSize.height = 512; // default 512
+    light2.shadow.camera.near = 2; // default 0.5
+    light2.shadow.camera.far = 1500;
+    realScene.add(light2);
+}
