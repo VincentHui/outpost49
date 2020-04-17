@@ -3,6 +3,7 @@ require("./styles/index.scss");
 import * as THREE from "three";
 import { createAsteroids, createPlanet, drawCursor, updateCursor, createLights } from "./app";
 import { initCannon, fireCannon, updateCannonShells } from "./cannon";
+import { createCollidableAsteroid } from "./asteroidLauncher"
 import { renderComponent } from "./renderer";
 import TWEEN from "@tweenjs/tween.js";
 
@@ -81,6 +82,7 @@ function init() {
     createLights(scene);
     var planet = createPlanet(60, scene);
     var cursor = drawCursor(scene);
+    createCollidableAsteroid(scene)
     window.addEventListener("mousemove", onMouseMove, false);
     window.addEventListener("mousedown", onMouseDown, false);
 
