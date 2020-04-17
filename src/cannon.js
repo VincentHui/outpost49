@@ -58,6 +58,8 @@ export const updateCannonShells = (delta, realscene)=>{
         // console.log(asteroids)
         if ( collisionResults.length > 0 ) 
         {
+            obj.velocity.negate()
+            obj.direction.negate()
             console.log('HIT!')
             // a collision occurred... do something...
         }
