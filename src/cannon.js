@@ -15,7 +15,6 @@ export const fireCannon = (intersects, realScene, direction)=>{
     newPosition.set(intersects.x, intersects.y, 0)
     dir.subVectors(newPosition , shellOrigin).normalize();
     shellObj.shell.position.copy(shellOrigin);
-    shellObj.direction.copy(dir)
     shellObj.velocity.copy(dir).multiplyScalar(initialSpeed)
     realScene.add( shellObj.shell );
 }
@@ -28,39 +27,39 @@ export const initCannon =()=>{
         var shell = new THREE.Mesh( geometry, material );
         LoadedShells.push({
             shell, 
-            direction:new THREE.Vector3( 0, 0, 0 ),
             velocity: new THREE.Vector3( 0, 0, 0)
         });        
     }
 }
 var desiredVelocity = new THREE.Vector3()
-// var newPosition = new THREE.Vector3()
 var steering = new THREE.Vector3()
 const mass = 20
 const speed = 300
 var raycaster = new THREE.Raycaster();
-raycaster.far = 10;
+raycaster.far = 20;
 var raycastDir = new THREE.Vector3();
+var collisionNormal = new THREE.Vector3();
+var reflected = new THREE.Vector3();
 export const updateCannonShells = (delta, realscene)=>{
     var i = UnloadedShells.length;
     while (i--) {
 
         const obj = UnloadedShells[i]
-        desiredVelocity.copy( obj.direction).multiplyScalar(speed * delta);
+        desiredVelocity.copy( obj.velocity).normalize().multiplyScalar(speed * delta);
         steering.copy(desiredVelocity).sub(obj.velocity)
         steering.divideScalar(mass)
         obj.velocity.add(steering)
         obj.shell.position.add( obj.velocity )
-        // var ray = new THREE.Ray( obj.shell.position, obj.velocity.clone().normalize() );
-        
+
         raycaster.set(obj.shell.position, raycastDir.copy(obj.velocity).normalize())
         const collisionResults = raycaster.intersectObjects( asteroids );
-        // console.log(asteroids)
         if ( collisionResults.length > 0 ) 
         {
-            obj.velocity.negate()
-            obj.direction.negate()
-            console.log('HIT!')
+            const collided = collisionResults[0].object;
+            collisionNormal.copy(collided.position).sub(obj.shell.position).normalize()
+            console.log(collisionNormal)
+            reflected.copy(obj.velocity).sub(collisionNormal.multiplyScalar(2 * obj.velocity.dot(collisionNormal)))
+            obj.velocity.copy(reflected).multiplyScalar(0.6)
             // a collision occurred... do something...
         }
 
@@ -73,9 +72,4 @@ export const updateCannonShells = (delta, realscene)=>{
         }
         
     }
-    // UnloadedShells.forEach(function(obj){
-    //     //calculate velocity
-
-
-    // })
 }
