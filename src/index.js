@@ -3,7 +3,7 @@ require("./styles/index.scss");
 import * as THREE from "three";
 import { createAsteroids, createPlanet, drawCursor, updateCursor, createLights } from "./app";
 import { initCannon, fireCannon, updateCannonShells } from "./cannon";
-import { createCollidableAsteroid } from "./asteroidLauncher"
+import { createCollidableAsteroid, updateAsteroids } from "./asteroidLauncher"
 import { renderComponent } from "./renderer";
 import TWEEN from "@tweenjs/tween.js";
 
@@ -102,6 +102,7 @@ function init() {
         renderer.update(scene, camera);
         TWEEN.update();
         updateCannonShells(delta, scene);
+        updateAsteroids(delta, scene)
         lastTime = currentTime;
     }
     requestAnimationFrame(update);

@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { planetOrigin } from './app'
-import { asteroids } from './asteroidLauncher'
+import { asteroidParent, collideWithAteroid} from './asteroidLauncher'
 var dir = new THREE.Vector3();
 var newPosition = new THREE.Vector3();
 const shellOrigin = new THREE.Vector3().copy(planetOrigin).add(new THREE.Vector3(0, 100, -200))
@@ -52,15 +52,14 @@ export const updateCannonShells = (delta, realscene)=>{
         obj.shell.position.add( obj.velocity )
 
         raycaster.set(obj.shell.position, raycastDir.copy(obj.velocity).normalize())
-        const collisionResults = raycaster.intersectObjects( asteroids );
+        const collisionResults = raycaster.intersectObjects( asteroidParent.children );
         if ( collisionResults.length > 0 ) 
         {
             const collided = collisionResults[0].object;
             collisionNormal.copy(collided.position).sub(obj.shell.position).normalize()
-            console.log(collisionNormal)
             reflected.copy(obj.velocity).sub(collisionNormal.multiplyScalar(2 * obj.velocity.dot(collisionNormal)))
-            obj.velocity.copy(reflected).multiplyScalar(0.6)
-            // a collision occurred... do something...
+            obj.velocity.copy(reflected).multiplyScalar(0.5)
+            collideWithAteroid(collided, obj, collisionNormal)
         }
 
         const distance = obj.shell.position.distanceTo (shellOrigin)
