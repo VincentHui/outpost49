@@ -5,6 +5,7 @@ import { createAsteroids, createPlanet, drawCursor, updateCursor, createLights }
 import { initCannon, fireCannon, updateCannonShells } from "./cannon";
 import { createCollidableAsteroid, updateAsteroids } from "./asteroidLauncher"
 import { renderComponent } from "./renderer";
+import { SubscribeEvent, FireEvent } from "./eventTable"
 import TWEEN from "@tweenjs/tween.js";
 
 var ww = window.innerWidth,
@@ -73,6 +74,11 @@ document.getElementById("menuPlay").onclick = function(params) {
 };
 
 function init() {
+
+    SubscribeEvent('test', ()=>{console.log('ASAD')})
+    SubscribeEvent('test', ()=>{console.log('ASAD2')})
+    FireEvent('test')
+
     const renderer = new renderComponent(ww, wh);
     scene.fog = new THREE.FogExp2(0xefd1b5, 0.0005);
     camera.position.set(0, 600, 1000);
