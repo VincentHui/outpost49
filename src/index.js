@@ -51,7 +51,7 @@ SubscribeEvent('GAME_START', ()=>{
     window.addEventListener("mousemove", onMouseMove, false);
     window.addEventListener("mousedown", onMouseDown, false);
     // initAsteroidLauncher(scene);
-    initCannon(); 
+
     var cursor = drawCursor(scene);
     createCollidableAsteroid(scene)
 })
@@ -60,7 +60,8 @@ SubscribeEvent('START_CLICKED', ()=>{
     document.getElementById("menuPlay").setAttribute("disabled", false);
     intro.stop();
     createPlanet(60, scene);
-
+    initAsteroidLauncher(scene)
+    initCannon(); 
     var coords = { y: 0, opacity: 1}; // Start at (0, 0)
     const tween = new TWEEN.Tween(coords) // Create a new tween that modifies 'coords'.
         .to({ y: -900, opacity:0 }, 1000) // Move to (300, 200) in 1 second.
