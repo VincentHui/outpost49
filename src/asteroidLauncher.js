@@ -1,4 +1,5 @@
-import { planetOrigin } from './planet'
+import { planetOrigin, planetParent } from './planet'
+import { SubscribeEvent, FireEvent, ClearEvent } from "./eventTable"
 import * as THREE from "three";
 const asteroidOrigin = new THREE.Vector3().copy(planetOrigin).add(new THREE.Vector3(-400, 400, 0))
 var asteroidsToMove = []
@@ -23,7 +24,10 @@ export const createCollidableAsteroid =(realScene)=>{
 var desiredVelocity = new THREE.Vector3()
 var steering = new THREE.Vector3()
 const mass = 200
-const speed = 100
+const speed = 150
+var raycaster = new THREE.Raycaster();
+raycaster.far = 20;
+var raycastDir = new THREE.Vector3();
 export const updateAsteroids = (delta, realscene)=>{
     var i = asteroidsToMove.length;
     while (i--) {
@@ -33,5 +37,14 @@ export const updateAsteroids = (delta, realscene)=>{
         steering.divideScalar(mass)
         obj.velocity.add(steering)
         obj.asteroid.position.add( obj.velocity )
+
+        raycaster.set(obj.asteroid.position, raycastDir.copy(obj.velocity).normalize())
+        const collisionResults = raycaster.intersectObjects( planetParent.children );
+        if ( collisionResults.length > 0 ) 
+        {
+            const collided = collisionResults[0].object;
+            // console.log('planetHit!')
+            FireEvent('PLANET_HIT')
+        }
     }
 }

@@ -20,13 +20,14 @@ export const createPlanet = (size, realScene) =>{
             metalness: 1
         });
   
-      const	cube = new THREE.Mesh(geometry, texture);
-    cube.castShadow = true;
-    cube.receiveShadow = true;
-    cube.scale.set(1+0.6,1+0.8,1*0.4);
+      const	planet = new THREE.Mesh(geometry, texture);
+    planet.castShadow = true;
+    planet.receiveShadow = true;
+    planet.scale.set(1+0.6,1+0.8,1*0.4);
     
-    cube.position.copy(planetOrigin)
-    realScene.add(cube);
+    planet.position.copy(planetOrigin)
+    planetParent.attach(planet);
+    realScene.add(planetParent);
     var light2 = new THREE.PointLight( 0x6495ed, 7, 900 );
     light2.position.set(0, -900, 150 );
     // light2.castShadow = true;            // default false
@@ -35,5 +36,5 @@ export const createPlanet = (size, realScene) =>{
     // light2.shadow.camera.near = 2;       // default 0.5
     // light2.shadow.camera.far = 1500;  
 	realScene.add(light2);
-    return {cube,  light2};
+    return {cube: planet,  light2};
 }
