@@ -1,9 +1,9 @@
 import * as THREE from 'three';
-import { planetOrigin } from './app'
+import { planetOrigin } from './planet'
 import { asteroidParent, collideWithAteroid} from './asteroidLauncher'
 var dir = new THREE.Vector3();
 var newPosition = new THREE.Vector3();
-const shellOrigin = new THREE.Vector3().copy(planetOrigin).add(new THREE.Vector3(0, 100, -200))
+const shellOrigin = new THREE.Vector3().copy(planetOrigin).add(new THREE.Vector3(0, 100, 0))
 const initialSpeed = 30
 export const fireCannon = (intersects, realScene, direction)=>{
     var shellObj = LoadedShells.pop()
@@ -20,8 +20,9 @@ export const fireCannon = (intersects, realScene, direction)=>{
 }
 var LoadedShells= []
 var UnloadedShells =[]
+const shellCapacity = 14;
 export const initCannon =()=>{
-    for (let index = 0; index < 8; index++) {
+    for (let index = 0; index < shellCapacity; index++) {
         var geometry = new THREE.BoxGeometry( 20, 20, 20 );
         var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
         var shell = new THREE.Mesh( geometry, material );

@@ -1,6 +1,6 @@
-import { planetOrigin } from './app'
+import { planetOrigin } from './planet'
 import * as THREE from "three";
-const asteroidOrigin = new THREE.Vector3().copy(planetOrigin).add(new THREE.Vector3(-400, 400, -200))
+const asteroidOrigin = new THREE.Vector3().copy(planetOrigin).add(new THREE.Vector3(-400, 400, 0))
 var asteroidsToMove = []
 export const asteroidParent = new THREE.Object3D('asteroidParent')
 var collisionForce = new THREE.Vector3()
@@ -17,13 +17,13 @@ export const createCollidableAsteroid =(realScene)=>{
     asteroid.position.copy(asteroidOrigin)
     asteroid.scale.set(5,5,5);
     asteroidParent.attach(asteroid);
-    asteroidsToMove.push({asteroid:asteroid, velocity: new  THREE.Vector3(0,-1,0)})
+    asteroidsToMove.push({asteroid:asteroid, velocity: new  THREE.Vector3().copy(planetOrigin).sub(asteroidOrigin).add(new THREE.Vector3(0,0,0)).normalize().multiplyScalar(0.5)})
     realScene.add( asteroidParent );
 }
 var desiredVelocity = new THREE.Vector3()
 var steering = new THREE.Vector3()
 const mass = 200
-const speed = 1
+const speed = 100
 export const updateAsteroids = (delta, realscene)=>{
     var i = asteroidsToMove.length;
     while (i--) {
