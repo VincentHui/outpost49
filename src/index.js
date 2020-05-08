@@ -3,10 +3,11 @@ require("./styles/index.scss");
 import * as THREE from "three";
 import { createAsteroids, drawCursor, updateCursor, createLights } from "./app";
 import { initCannon, fireCannon, updateCannonShells } from "./cannon";
-import { createCollidableAsteroid, updateAsteroids } from "./asteroidLauncher"
+import { createCollidableAsteroid, updateAsteroids, initAsteroidLauncher } from "./asteroidLauncher"
 import { createPlanet } from './planet'
 import { renderComponent } from "./renderer";
 import { SubscribeEvent, FireEvent, ClearEvent } from "./eventTable"
+import { initCoordinator } from './gameCoordinator'
 import TWEEN from "@tweenjs/tween.js";
 
 var ww = window.innerWidth,
@@ -49,6 +50,7 @@ SubscribeEvent('GAME_START', ()=>{
     currentState = GameEnum.playing
     window.addEventListener("mousemove", onMouseMove, false);
     window.addEventListener("mousedown", onMouseDown, false);
+    // initAsteroidLauncher(scene);
     initCannon(); 
     var cursor = drawCursor(scene);
     createCollidableAsteroid(scene)
@@ -58,6 +60,7 @@ SubscribeEvent('START_CLICKED', ()=>{
     document.getElementById("menuPlay").setAttribute("disabled", false);
     intro.stop();
     createPlanet(60, scene);
+
     var coords = { y: 0, opacity: 1}; // Start at (0, 0)
     const tween = new TWEEN.Tween(coords) // Create a new tween that modifies 'coords'.
         .to({ y: -900, opacity:0 }, 1000) // Move to (300, 200) in 1 second.
@@ -91,7 +94,7 @@ function init() {
     scene.add(camera);
     intro.start();
     createLights(scene);
-
+    initCoordinator();
     var CursorIntersects = new THREE.Vector3();
 
     function update(time) {
