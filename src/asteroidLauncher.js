@@ -11,15 +11,37 @@ export const collideWithAteroid = (asteroid, shell, collisionNormal)=>{
     found.velocity.add(collisionForce.copy(collisionNormal.multiplyScalar(0.01)))
 }
 
+const getPointOnRadius =(originX, originY, radius, angle)=>{
+    const x = originX + radius * Math.cos(angle)
+    const y = originY + radius * Math.sin(angle)
+    return {
+        x:x,y:y
+    }
+}
+
+function randomIntFromInterval(min, max) { // min and max included 
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  }
+
+const setAsteroid = (asteroid)=>{
+    const newPos = getPointOnRadius(planetOrigin.x, planetOrigin.y, 400, randomIntFromInterval(Math.PI* 1/6 ,Math.PI* 5/6))
+    asteroid.position.copy(new THREE.Vector3(newPos.x, newPos.y, 0))
+    // asteroid.velocity.set(new THREE.Vector3().copy(planetOrigin).sub(asteroid.position).normalize().multiplyScalar(0.5))
+}
+
+
 export const initAsteroidLauncher =(realScene)=>{
-    var geometry = new THREE.BoxGeometry( 20, 20, 20 );
-    var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
-    var asteroid = new THREE.Mesh( geometry, material );
-    asteroid.name ='collidable'
-    asteroid.position.copy(asteroidOrigin)
-    asteroid.scale.set(5,5,5);
-    // realScene.attach(asteroid);
-    unlaunchedAsteroids.push({asteroid:asteroid, velocity: new  THREE.Vector3().copy(planetOrigin).sub(asteroidOrigin).add(new THREE.Vector3(0,0,0)).normalize().multiplyScalar(0.5)})
+    for (let index = 0; index < 3; index++) {
+        var geometry = new THREE.BoxGeometry( 20, 20, 20 );
+        var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+        var asteroid = new THREE.Mesh( geometry, material );
+        asteroid.name ='collidable'
+        // asteroid.position.copy(asteroidOrigin)
+        setAsteroid(asteroid)
+        asteroid.scale.set(5,5,5);
+        unlaunchedAsteroids.push({asteroid:asteroid, velocity: new  THREE.Vector3().copy(planetOrigin).sub(asteroid.position).normalize().multiplyScalar(0.5)})
+    }
+
     realScene.add( asteroidParent );
 }
 
@@ -27,6 +49,7 @@ export const createCollidableAsteroid =(realScene)=>{
    
     let obj = unlaunchedAsteroids.pop()
     asteroidParent.attach(obj.asteroid);
+    obj.velocity.copy(new THREE.Vector3().copy(planetOrigin).sub(obj.asteroid.position).normalize().multiplyScalar(0.5))
     launchedAsteroids.push(obj)
     
 }
@@ -51,12 +74,15 @@ export const updateAsteroids = (delta, realscene)=>{
         const collisionResults = raycaster.intersectObjects( planetParent.children );
         if ( collisionResults.length > 0 ) 
         {
-            // const collided = collisionResults[0].object;
             FireEvent('PLANET_HIT')
+
             launchedAsteroids.splice(i, 1);
             unlaunchedAsteroids.push(obj)
+            // obj.asteroid.position.copy(asteroidOrigin)
+            setAsteroid(obj.asteroid)
+            // obj.velocity.copy(new THREE.Vector3().copy(planetOrigin).sub(obj.asteroid.position).normalize().multiplyScalar(0.5))
             asteroidParent.remove(obj.asteroid)
-            
+            createCollidableAsteroid(realscene)
         }
     }
 }

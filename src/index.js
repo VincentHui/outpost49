@@ -7,7 +7,7 @@ import { createCollidableAsteroid, updateAsteroids, initAsteroidLauncher } from 
 import { createPlanet } from './planet'
 import { renderComponent } from "./renderer";
 import { SubscribeEvent, FireEvent, ClearEvent } from "./eventTable"
-import { initCoordinator } from './gameCoordinator'
+import { initCoordinator, currentState, GameEnum } from './gameCoordinator'
 import TWEEN from "@tweenjs/tween.js";
 
 var ww = window.innerWidth,
@@ -20,8 +20,8 @@ const scene = new THREE.Scene();
 var lastTime = new Date().getTime();
 var currentTime = 0;
 var delta = 0;
-const GameEnum = {"paused":1, "menu":2, "playing":3}
-let currentState = GameEnum.menu
+// const GameEnum = {"paused":1, "menu":2, "playing":3}
+// let currentState = GameEnum.menu
 function onMouseMove(event) {
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -47,7 +47,7 @@ const intro = new TWEEN.Tween(coords)
 SubscribeEvent('GAME_START', ()=>{
     console.log('starting the game!')
     // console.log('state ' + currentState)
-    currentState = GameEnum.playing
+    
     window.addEventListener("mousemove", onMouseMove, false);
     window.addEventListener("mousedown", onMouseDown, false);
     // initAsteroidLauncher(scene);
