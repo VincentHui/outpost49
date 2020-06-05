@@ -20,6 +20,7 @@ const scene = new THREE.Scene();
 var lastTime = new Date().getTime();
 var currentTime = 0;
 var delta = 0;
+const renderComp = new renderComponent(ww, wh);
 // const GameEnum = {"paused":1, "menu":2, "playing":3}
 // let currentState = GameEnum.menu
 function onMouseMove(event) {
@@ -33,6 +34,12 @@ function onMouseDown(event) {
     fireCannon(MouseIntersects, scene);
 }
 
+window.addEventListener( 'resize', onWindowResize, false );
+function onWindowResize(){
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderComp.renderer.setSize( window.innerWidth, window.innerHeight );
+}
 var coords = { y: 600 };
 const intro = new TWEEN.Tween(coords)
     .to({ y: 0 }, 3000)
@@ -89,7 +96,7 @@ SubscribeEvent('START_CLICKED', ()=>{
 var asteroids = createAsteroids(scene);
 function init() {
 
-    const renderer = new renderComponent(ww, wh);
+
     scene.fog = new THREE.FogExp2(0xefd1b5, 0.0005);
     camera.position.set(0, 600, 1000);
     scene.add(camera);
@@ -100,15 +107,24 @@ function init() {
 
     function update(time) {
         requestAnimationFrame(update);
+        // camera.updateMatrix(); // make sure camera's local matrix is updated
+        // camera.updateMatrixWorld(); // make sure camera's world matrix is updated
+        // camera.matrixWorldInverse.getInverse( camera.matrixWorld );
         currentTime = new Date().getTime();
         delta = (currentTime - lastTime) / 1000;
+        
+        const canvas = renderComp.domElement;
+        // console.log(rende)
+        // camera.aspect = canvas.clientWidth / canvas.clientHeight;
+        // camera.updateProjectionMatrix();
+
         asteroids.forEach(function(obj) {
             obj.rotation.x -= obj.r.x;
             obj.rotation.y -= obj.r.y;
             obj.rotation.z -= obj.r.z;
         });
 
-        renderer.update(scene, camera);
+        renderComp.update(scene, camera);
         TWEEN.update();
         if(currentState === GameEnum.playing){
             raycaster.setFromCamera(mouse, camera);
@@ -122,6 +138,8 @@ function init() {
     }
     requestAnimationFrame(update);
 }
+
+
 
 //Init our scene
 init();
