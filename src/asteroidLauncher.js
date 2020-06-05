@@ -19,12 +19,14 @@ const getPointOnRadius =(originX, originY, radius, angle)=>{
     }
 }
 
-function randomIntFromInterval(min, max) { // min and max included 
-    return Math.floor(Math.random() * (max - min + 1) + min);
+function randomFloatFromInterval(min, max) { // min and max included 
+    return Math.random() * (max - min) + min;
   }
 
 const setAsteroid = (asteroid)=>{
-    const newPos = getPointOnRadius(planetOrigin.x, planetOrigin.y, 400, randomIntFromInterval(Math.PI* 1/6 ,Math.PI* 5/6))
+    const randomAngle = randomFloatFromInterval(Math.PI* 1/4 ,Math.PI* 3/4)
+    const newPos = getPointOnRadius(planetOrigin.x, planetOrigin.y, 400, randomAngle)
+    console.log(randomAngle)
     asteroid.position.copy(new THREE.Vector3(newPos.x, newPos.y, 0))
     // asteroid.velocity.set(new THREE.Vector3().copy(planetOrigin).sub(asteroid.position).normalize().multiplyScalar(0.5))
 }
