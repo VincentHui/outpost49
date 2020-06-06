@@ -37,7 +37,7 @@ var steering = new THREE.Vector3()
 const mass = 20
 const speed = 300
 var raycaster = new THREE.Raycaster();
-raycaster.far = 30;
+raycaster.far = 35;
 var raycastDir = new THREE.Vector3();
 var collisionNormal = new THREE.Vector3();
 var reflected = new THREE.Vector3();
@@ -53,7 +53,17 @@ export const updateCannonShells = (delta, realscene)=>{
         obj.shell.position.add( obj.velocity )
 
         raycaster.set(obj.shell.position, raycastDir.copy(obj.velocity).normalize())
-        const collisionResults = raycaster.intersectObjects( asteroidParent.children );
+        var collisionResults = raycaster.intersectObjects( asteroidParent.children );
+        var axis = new THREE.Vector3( 0, 0, 1 );
+        var angle = Math.PI / 4;
+        raycastDir.applyAxisAngle( axis, angle );
+        raycaster.set(obj.shell.position, raycastDir)
+        collisionResults = collisionResults.concat(raycaster.intersectObjects( asteroidParent.children ));
+        raycastDir.applyAxisAngle( -axis, angle );
+        raycaster.set(obj.shell.position, raycastDir)
+        collisionResults = collisionResults.concat(raycaster.intersectObjects( asteroidParent.children ));
+        // var axis = new THREE.Vector3( 0, 1, 0 );
+        // var angle = Math.PI / 2;
         if ( collisionResults.length > 0 ) 
         {
             const collided = collisionResults[0].object;

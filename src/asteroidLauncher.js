@@ -56,9 +56,6 @@ export const createCollidableAsteroid =(realScene)=>{
     
 }
 
-const CheckAteroids = ()=>{
-
-}
 
 var desiredVelocity = new THREE.Vector3()
 var steering = new THREE.Vector3()
