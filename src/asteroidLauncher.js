@@ -26,7 +26,7 @@ function randomFloatFromInterval(min, max) { // min and max included
 const setAsteroid = (asteroid)=>{
     const randomAngle = randomFloatFromInterval(Math.PI* 1/4 ,Math.PI* 3/4)
     const newPos = getPointOnRadius(planetOrigin.x, planetOrigin.y, 400, randomAngle)
-    console.log(randomAngle)
+    // console.log(randomAngle)
     asteroid.position.copy(new THREE.Vector3(newPos.x, newPos.y, 0))
     // asteroid.velocity.set(new THREE.Vector3().copy(planetOrigin).sub(asteroid.position).normalize().multiplyScalar(0.5))
 }
@@ -55,6 +55,11 @@ export const createCollidableAsteroid =(realScene)=>{
     launchedAsteroids.push(obj)
     
 }
+
+const CheckAteroids = ()=>{
+
+}
+
 var desiredVelocity = new THREE.Vector3()
 var steering = new THREE.Vector3()
 const mass = 200
@@ -62,7 +67,16 @@ const speed = 150
 var raycaster = new THREE.Raycaster();
 raycaster.far = 40;
 var raycastDir = new THREE.Vector3();
-export const updateAsteroids = (delta, realscene)=>{
+
+const removeAsteroid = (obj, i, realscene)=>{
+    launchedAsteroids.splice(i, 1);
+    unlaunchedAsteroids.push(obj)
+    setAsteroid(obj.asteroid)
+    asteroidParent.remove(obj.asteroid)
+    createCollidableAsteroid(realscene)
+}
+
+export const updateAsteroids = (delta, realscene, camera)=>{
     var i = launchedAsteroids.length;
     while (i--) {
         const obj = launchedAsteroids[i]
@@ -77,14 +91,11 @@ export const updateAsteroids = (delta, realscene)=>{
         if ( collisionResults.length > 0 ) 
         {
             FireEvent('PLANET_HIT')
-
-            launchedAsteroids.splice(i, 1);
-            unlaunchedAsteroids.push(obj)
-            // obj.asteroid.position.copy(asteroidOrigin)
-            setAsteroid(obj.asteroid)
-            // obj.velocity.copy(new THREE.Vector3().copy(planetOrigin).sub(obj.asteroid.position).normalize().multiplyScalar(0.5))
-            asteroidParent.remove(obj.asteroid)
-            createCollidableAsteroid(realscene)
+            removeAsteroid(obj, i, realscene)
+        }
+        if(planetOrigin.distanceTo(obj.asteroid.position) > 500)
+        {
+            removeAsteroid(obj, i, realscene)
         }
     }
 }
