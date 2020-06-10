@@ -76,6 +76,7 @@ SubscribeEvent('GAME_OVER', ()=>{
 
     document.getElementById("gameOver").onclick = function(params) {
         console.log('START AGAIN!')
+        FireEvent('GAME_REPLAY');
     };
 
     var coords = { opacity: 0};
