@@ -52,18 +52,8 @@ export const updateCannonShells = (delta, realscene)=>{
         obj.velocity.add(steering)
         obj.shell.position.add( obj.velocity )
 
-        raycaster.set(obj.shell.position, raycastDir.copy(obj.velocity).normalize())
-        var collisionResults = raycaster.intersectObjects( asteroidParent.children );
-        var axis = new THREE.Vector3( 0, 0, 1 );
-        var angle = Math.PI / 4;
-        raycastDir.applyAxisAngle( axis, angle );
-        raycaster.set(obj.shell.position, raycastDir)
-        collisionResults = collisionResults.concat(raycaster.intersectObjects( asteroidParent.children ));
-        raycastDir.applyAxisAngle( -axis, angle );
-        raycaster.set(obj.shell.position, raycastDir)
-        collisionResults = collisionResults.concat(raycaster.intersectObjects( asteroidParent.children ));
-        // var axis = new THREE.Vector3( 0, 1, 0 );
-        // var angle = Math.PI / 2;
+        var collisionResults = RaycastCollisions(obj.shell.position, obj.velocity, raycaster,asteroidParent.children);
+
         if ( collisionResults.length > 0 ) 
         {
             const collided = collisionResults[0].object;
@@ -82,4 +72,18 @@ export const updateCannonShells = (delta, realscene)=>{
         }
         
     }
+}
+
+export const RaycastCollisions = (position, velocity, p_raycaster, toCollide) => {
+    p_raycaster.set(position, raycastDir.copy(velocity).normalize());
+    var collisionResults = p_raycaster.intersectObjects(toCollide);
+    var axis = new THREE.Vector3(0, 0, 1);
+    var angle = Math.PI / 4;
+    raycastDir.applyAxisAngle(axis, angle);
+    p_raycaster.set(position, raycastDir);
+    collisionResults = collisionResults.concat(p_raycaster.intersectObjects(toCollide));
+    raycastDir.applyAxisAngle(-axis, angle);
+    p_raycaster.set(position, raycastDir);
+    collisionResults = collisionResults.concat(p_raycaster.intersectObjects(toCollide));
+    return collisionResults;
 }

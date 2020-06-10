@@ -1,5 +1,6 @@
 import { planetOrigin, planetParent } from './planet'
 import { SubscribeEvent, FireEvent, ClearEvent } from "./eventTable"
+import { RaycastCollisions } from './cannon'
 import * as THREE from "three";
 const asteroidOrigin = new THREE.Vector3().copy(planetOrigin).add(new THREE.Vector3(-400, 400, 0))
 var launchedAsteroids = []
@@ -60,9 +61,9 @@ export const createCollidableAsteroid =(realScene)=>{
 var desiredVelocity = new THREE.Vector3()
 var steering = new THREE.Vector3()
 const mass = 200
-const speed = 150
+const speed = 300
 var raycaster = new THREE.Raycaster();
-raycaster.far = 40;
+raycaster.far = 60;
 var raycastDir = new THREE.Vector3();
 
 const removeAsteroid = (obj, i, realscene)=>{
@@ -83,9 +84,10 @@ export const updateAsteroids = (delta, realscene, camera)=>{
         obj.velocity.add(steering)
         obj.asteroid.position.add( obj.velocity )
 
-        raycaster.set(obj.asteroid.position, raycastDir.copy(obj.velocity).normalize())
-        const collisionResults = raycaster.intersectObjects( planetParent.children );
-        if ( collisionResults.length > 0 ) 
+        // raycaster.set(obj.asteroid.position, raycastDir.copy(obj.velocity).normalize())
+        // const collisionResults = raycaster.intersectObjects( planetParent.children );
+        // const collisionResults = RaycastCollisions(obj.asteroid.position,obj.velocity,raycaster, planetParent.children)
+        if (planetOrigin.distanceTo(obj.asteroid.position) < 150 ) 
         {
             FireEvent('PLANET_HIT')
             removeAsteroid(obj, i, realscene)
