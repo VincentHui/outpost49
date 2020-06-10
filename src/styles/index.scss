@@ -33,3 +33,16 @@ body {
     font-size: x-large;
     opacity: 1;
 }
+#gameOver{
+  position: absolute;
+bottom: 5%;
+width: 30%;
+text-align: center;
+z-index: 100;
+  display:block;
+  color: white;
+  background-color: rgba($color: black, $alpha: 0.5);
+  font-family: monospace;
+  font-size: x-large;
+  opacity: 1;
+}

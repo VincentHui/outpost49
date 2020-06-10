@@ -50,6 +50,12 @@ const intro = new TWEEN.Tween(coords)
     document.getElementById("menuPlay").onclick = function(params) {
         FireEvent('START_CLICKED')
     };
+    document
+    .getElementById("gameOver")
+    .setAttribute("disabled", false);
+    document
+    .getElementById("gameOver")
+    .style.setProperty("opacity", 0);
 
 SubscribeEvent('GAME_START', ()=>{
     console.log('starting the game!')
@@ -61,6 +67,29 @@ SubscribeEvent('GAME_START', ()=>{
 
     var cursor = drawCursor(scene);
     createCollidableAsteroid(scene)
+})
+
+SubscribeEvent('GAME_OVER', ()=>{
+    document
+    .getElementById("gameOver")
+    .removeAttribute("disabled");
+
+    document.getElementById("gameOver").onclick = function(params) {
+        console.log('START AGAIN!')
+    };
+
+    var coords = { opacity: 0};
+    const tween = new TWEEN.Tween(coords) 
+        .to({ opacity:1 }, 1000) 
+        .easing(TWEEN.Easing.Cubic.InOut) 
+        .onUpdate(() => {
+            document
+            .getElementById("gameOver")
+            .style.setProperty("opacity", `${coords.opacity}`);
+            })
+        .start();
+    
+    document.getElementById("menuPlay").remove();
 })
 
 SubscribeEvent('START_CLICKED', ()=>{

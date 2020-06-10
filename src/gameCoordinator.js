@@ -19,6 +19,6 @@ export const initCoordinator =()=>{
     })
     SubscribeEvent('GAME_OVER',()=>{
         currentState = GameEnum.gameOver
-        console.log('game over!')
+        // console.log('game over!')
     })
 }
