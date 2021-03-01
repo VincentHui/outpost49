@@ -23,7 +23,7 @@
     "dependencies": {
         "@tweenjs/tween.js": "^18.5.0",
         "normalize.css": "^8.0.0",
-        "three": "^0.115.0"
+        "three": "^0.125.0"
     },
     "devDependencies": {
         "@fullhuman/postcss-purgecss": "^1.1.0",
